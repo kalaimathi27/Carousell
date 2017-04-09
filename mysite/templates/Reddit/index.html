@@ -2,12 +2,37 @@
 <title> Reddit </title>
 <head>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.20/css/uikit.min.css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.20/js/uikit.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.20/js/uikit-icons.min.js"></script>
+	
 </head>
-<body>
-	<form>
-		<input type="text" class="md-input" />Blah
-	</form>
+<body class="uk-container-center">
+	<article class="uk-article">
+		<h1 class="uk-article-title uk-text-center">Reddit</h1>
+	</article>
+	<table class="uk-table">
+		<thead>
+			<ul class="uk-tab" data-uk-tab>
+			    <li class="uk-active"><a href="">Hot</a></li>
+			    <li><a href="">New</a></li>
+			    <li><a href="">Trending</a></li>
+			</ul>
+		</thead>
+		<tbody>
+			{% for topic in context%}
+				<tr>
+					<td>
+					{{topic.title}}
+					</td>
+				</tr>
+			{% endfor%}
+		</tbody>
+	</table>
 </body>
+<script type="text/javascript">
+	$(document).ready(function() {
+        
+    });
+</script>
 </html>
