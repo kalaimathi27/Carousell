@@ -18,10 +18,11 @@ def get_initial_topics():
         temp_topic = Topic("Temp topic", "", "", "admin", "trending")
         
         for i in range(5):
-            temp_topic.upvotes = 200+i*10
-            temp_topic.downvotes = 100-i*2
+            temp_topic.upvotes = 10+i*10
+            temp_topic.downvotes = 5-i*2
             temp_topic.title = text_list[i]
             temp_topic.topic_type = topic_type[i]
+            temp_topic.titleid = i*10 + 1;
             topics.append(temp_topic.get_topic())
         return topics
     except Exception as exce:
@@ -31,7 +32,8 @@ class Topic:
     """
     Class to initialize a topic
     """
-    def __init__(self, title, text, sub_reddit, user_created, topic_type):
+    def __init__(self, title, text, sub_reddit, user_created, topic_type, id=None):
+        self.titleid = id
         self.title = title
         self.text = text
         self.sub_reddit = sub_reddit

@@ -11,28 +11,49 @@
 	<article class="uk-article">
 		<h1 class="uk-article-title uk-text-center">Reddit</h1>
 	</article>
-	<table class="uk-table">
+	<article>
+		<button class="uk-button-danger uk-align-center uk-button-default">Add Title</button>
+	</article>
+	<table class="uk-table" id="topictable">
 		<thead>
 			<ul class="uk-tab" data-uk-tab>
-			    <li class="uk-active"><a href="">Hot</a></li>
-			    <li><a href="">New</a></li>
+			    <li class="uk-active"><a href="" onclick="loadHot(this)">Hot</a></li>
+			    <li><a href="" onclick="loadNew(this)">New</a></li>
 			    <li><a href="">Trending</a></li>
 			</ul>
 		</thead>
 		<tbody>
-			{% for topic in context%}
-				<tr>
-					<td>
-					{{topic.title}}
-					</td>
-				</tr>
-			{% endfor%}
+			
 		</tbody>
 	</table>
 </body>
 <script type="text/javascript">
+	var topics = [];
+	
+	function loadHot(){
+		var topicpanel = "";
+		$('#topictable').html('');
+		for(i=0;i<topics.length;i++)
+		{
+			var upvotes_id = "upvotes_" + topics[i].titleid;
+			var downvotes_id="downvotes_" + topics[i].titleid;
+			topicpanel += '<tr><form method="post">'+
+							'<td><button id="' + upvotes_id + '">&uarr;</button></td><td>' + topics[i].upvotes + '</td> '+
+							'<td><button id="' + downvotes_id + '">&darr;</button></td><td>' + topics[i].downvotes + '</td> '+
+							'<td id="topicTitle">'+
+							'<h4 class="uk-text-middle">' + topics[i].title + '</h4>' + 
+							'</td>' +
+							'</form></tr>';
+		}
+		//$('#topictable > tbody:last-child').append(topicpanel);
+		$('#topictable').html(topicpanel);
+	}
+	
 	$(document).ready(function() {
-        
+		topics = {{context|safe}};
+		loadHot();
     });
+    
+    
 </script>
 </html>
