@@ -18,5 +18,6 @@ from django.contrib import admin
 
 urlpatterns = [
 	url(r'^Reddit/', include('Reddit.urls')),
+    url(r'^Reddit/track_votes/', include('Reddit.urls')),
     url(r'^admin/', admin.site.urls),
 ]

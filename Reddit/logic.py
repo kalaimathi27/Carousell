@@ -4,9 +4,12 @@ Created on Apr 9, 2017
 @author: kkuser
 '''
 import datetime
+from Reddit.utils import Utils
+
 
 def get_initial_topics():
     try:
+        utils_obj = Utils()
         text_list = ["Music is all to me",
                      "NASA unveiled new plans for getting humans to Mars, and hardly anyone noticed",
                      "20 years ago today, Third Eye Blind released their self-titled album including Jumper and Semi-Charmed Life",
@@ -15,15 +18,16 @@ def get_initial_topics():
                      "'Sons of Guns' star Will Hayden found guilty in sexual assaults of 2 girls; sentenced to life in prison"]
         topic_type = ["Music", "Space", "Music", "Army", "Public", "Movie"]
         topics = []
-        temp_topic = Topic("Temp topic", "", "", "admin", "trending")
+        
         
         for i in range(5):
-            temp_topic.upvotes = 10+i*10
-            temp_topic.downvotes = 5-i*2
+            temp_topic = Topic("Temp topic", "", "", "admin", "trending")
+            temp_topic.upvotes = i
+            temp_topic.downvotes = i-1
             temp_topic.title = text_list[i]
             temp_topic.topic_type = topic_type[i]
             temp_topic.titleid = i*10 + 1;
-            topics.append(temp_topic.get_topic())
+            topics.append(temp_topic)
         return topics
     except Exception as exce:
         raise exce
@@ -43,10 +47,10 @@ class Topic:
         self.topic_type = topic_type
         self.created_date = datetime.datetime.now()
     
-    def get_topic(self):
-        return {"title": self.title,
-                "text": self.text,
-                "sub_redit": self.sub_reddit,
-                "upvotes": self.upvotes,
-                "downvotes": self.downvotes}
+    def track_votes(self, vote_category):
+        if vote_category == "upvotes":
+            self.upvotes += 1;
+        else:
+            self.downvotes -= 1;
+
         

@@ -35,24 +35,48 @@
 		$('#topictable').html('');
 		for(i=0;i<topics.length;i++)
 		{
-			var upvotes_id = "upvotes_" + topics[i].titleid;
-			var downvotes_id="downvotes_" + topics[i].titleid;
+			var upvotes_id = "upvotes_" + topics[i].id;
+			var downvotes_id = "downvotes_" + topics[i].id;
 			topicpanel += '<tr><form method="post">'+
-							'<td><button id="' + upvotes_id + '">&uarr;</button></td><td>' + topics[i].upvotes + '</td> '+
-							'<td><button id="' + downvotes_id + '">&darr;</button></td><td>' + topics[i].downvotes + '</td> '+
+							'<td><button id="upvotes_btn'+ upvotes_id+'" onclick="trackvotes(this)"">&uarr;</button></td><td id="'+ upvotes_id +'">' + topics[i].upvotes + '</td> '+
+							'<td><button id="downvotes_btn'+ downvotes_id +'" onclick="trackvotes(this)"">&darr;</button></td><td id="'+ downvotes_id +'">' + topics[i].downvotes + '</td> '+
 							'<td id="topicTitle">'+
 							'<h4 class="uk-text-middle">' + topics[i].title + '</h4>' + 
 							'</td>' +
 							'</form></tr>';
 		}
-		//$('#topictable > tbody:last-child').append(topicpanel);
 		$('#topictable').html(topicpanel);
 	}
 	
 	$(document).ready(function() {
 		topics = {{context|safe}};
-		loadHot();
+		loadHot(topics);
+		$.ajaxSetup({cache:false});
     });
+    
+    function trackvotes(event){
+    	
+    	var elmnt_id = document.getElementById(event.id);
+    	var count_id = elmnt_id.id.split("_")[2];
+    	var vote_type = elmnt_id.id.split("_")[0];
+    	$.ajax({
+    			type: "POST",
+    			url: "/Reddit/track_votes/",
+    			data: JSON.stringify({'titleid': parseInt(count_id),
+    									'votes': vote_type}),
+    			success: function(data){
+    					var votes_id = "#" + vote_type + "_" + count_id;
+    					alert(votes_id);
+    					var votes = $(votes_id).html();
+    					$(votes_id).html(votes);
+    					//loadHot(topics);
+    					window.location.reload();
+    				},
+    			cache: false
+    			});
+    	
+    }
+    
     
     
 </script>
