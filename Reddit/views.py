@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import loader
@@ -33,5 +34,15 @@ def track_votes(request):
 		if topic.titleid == title_id:
 			topic.track_votes(vote_category)
 	return HttpResponse('')
+
+
+@csrf_exempt
+def add_user(request):
+	import pdb;pdb.set_trace()
+	request_obj = json.loads(request.body)
+	username = request_obj["username"]
+	email = request_obj["email"]
+	
+	pass
 	
 	

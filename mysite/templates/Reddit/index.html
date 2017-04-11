@@ -8,27 +8,56 @@
 	
 </head>
 <body class="uk-container-center">
-	<article class="uk-article">
-		<h1 class="uk-article-title uk-text-center">Reddit</h1>
-	</article>
-	<article>
-		<button class="uk-button-danger uk-align-center uk-button-default">Add Title</button>
-	</article>
-	<table class="uk-table" id="topictable">
-		<thead>
-			<ul class="uk-tab" data-uk-tab>
-			    <li class="uk-active"><a href="" onclick="loadHot(this)">Hot</a></li>
-			    <li><a href="" onclick="loadNew(this)">New</a></li>
-			    <li><a href="">Trending</a></li>
-			</ul>
-		</thead>
-		<tbody>
+	<div class="uk-grid" data-uk-grid-match="{row:false}">
+		<div class="uk-width-3-4">
+			<article class="uk-article">
+				<h1 class="uk-article-title uk-text-center">Reddit</h1>
+			</article>
 			
-		</tbody>
-	</table>
+			<table class="uk-table" id="topictable">
+				<thead>
+					<ul class="uk-tab" data-uk-tab>
+					    <li class="uk-active"><a href="" onclick="loadHot(this)">Hot</a></li>
+					    <li><a href="" onclick="loadNew(this)">New</a></li>
+					    <li><a href="">Trending</a></li>
+					</ul>
+				</thead>
+				<tbody>
+					
+				</tbody>
+			</table>
+		</div>
+		<div class="uk-width-1-4 uk-padding-large uk-padding-remove-top">
+				<div class="uk-padding-large" data-uk-margin>
+					Continue as : <input class="md-input" type="text" id="username" placeholder="User name"></input>
+					<input class="md-input" type="text" id="emailid" placeholder="Email"></input>
+					<button type="md-btn" onclick="adduser()" id="add">Continue</button>
+				</div>
+				
+				<div class="uk-padding-large uk-padding-remove-top">
+				
+				<form class="uk-form" data-uk-margin>
+					<article>
+						Add New title !
+					</article>
+					<input id="topicname" type="text" class="md-input" placeholder="Topic"></input>
+					<textarea id="textname" cols="22" rows="9" class="md-input" placeholder="Text"></textarea>
+					<input id="typename" type="text" class="md-input" placeholder="Category"></input>
+					<input id="subreditname" type="text" class="md-input" placeholder="Sub reddit"></input>
+					<article>
+						<button class="uk-button-danger uk-button-default" onclick="addtitle()">Add Title</button>
+					</article>
+				</form>
+				</div>
+		</div>
+	</div>
 </body>
 <script type="text/javascript">
 	var topics = [];
+	
+	function addtitle(event){
+		alert("heyy");
+	}
 	
 	function loadHot(){
 		var topicpanel = "";
@@ -41,11 +70,20 @@
 							'<td><button id="upvotes_btn'+ upvotes_id+'" onclick="trackvotes(this)"">&uarr;</button></td><td id="'+ upvotes_id +'">' + topics[i].upvotes + '</td> '+
 							'<td><button id="downvotes_btn'+ downvotes_id +'" onclick="trackvotes(this)"">&darr;</button></td><td id="'+ downvotes_id +'">' + topics[i].downvotes + '</td> '+
 							'<td id="topicTitle">'+
-							'<h4 class="uk-text-middle">' + topics[i].title + '</h4>' + 
+								'<a href="#modaltopic">'+
+								'<h5 class="uk-text-middle" style="float:left">' + topics[i].title +
+								'</h5></a>'+
+								'</td><td><h6 class="uk-text-muted">(' + topics[i].topic_type + ')</h6></td><td>'+
+								'<h6 class="uk-text-right uk-text-muted" style="float:right"> submitted at ' + topics[i].created_date + ' by ' + topics[i].user_created + '</h6>' + 
+								
 							'</td>' +
 							'</form></tr>';
 		}
 		$('#topictable').html(topicpanel);
+	}
+	
+	function loadNew(){
+		$('#topictable').html('');
 	}
 	
 	$(document).ready(function() {
@@ -66,10 +104,8 @@
     									'votes': vote_type}),
     			success: function(data){
     					var votes_id = "#" + vote_type + "_" + count_id;
-    					alert(votes_id);
     					var votes = $(votes_id).html();
     					$(votes_id).html(votes);
-    					//loadHot(topics);
     					window.location.reload();
     				},
     			cache: false
@@ -77,6 +113,25 @@
     	
     }
     
+    function adduser(){
+    	if($('#add').html() == "Change User")
+    	{
+    		$('#username').val('');
+    		
+    		$('#emailid').show();
+    		$('#emailid').val('');
+    		$('#add').html('Continue');
+    		return;
+    	}
+    	var username = $('#username').val();
+    	var email = $('#emailid').val();
+    	var cookies = "username=" + username + ";" + " email=" + email;
+    	document.cookie = cookies;
+    	$('#username').html(username);
+    	$('#emailid').hide();
+    	$('#add').html('Change User');
+    	alert("User successfully added");
+    }
     
     
 </script>
