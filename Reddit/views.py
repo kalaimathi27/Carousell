@@ -6,14 +6,17 @@ from django.shortcuts import render
 from django.template import loader
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 
-from Reddit.logic import get_initial_topics
+from Reddit.logic import get_initial_topics, Topic
 from Reddit.utils import Utils
+import random
 
 
 
 topics = get_initial_topics()
 
 def index(request):
+	global topics
+# 	import pdb;pdb.set_trace()
 	utils_obj = Utils()
 	topics_dict_list = []
 	for topic in topics:
@@ -26,6 +29,7 @@ def index(request):
 
 @csrf_exempt
 def track_votes(request):
+	global topics
 	utils_obj = Utils()
 	request_obj = json.loads(request.body)
 	title_id = request_obj["titleid"]
@@ -37,12 +41,21 @@ def track_votes(request):
 
 
 @csrf_exempt
-def add_user(request):
-	import pdb;pdb.set_trace()
+def add_title(request):
+	global topics
+	utils_obj = Utils()
 	request_obj = json.loads(request.body)
-	username = request_obj["username"]
-	email = request_obj["email"]
+# 	import pdb;pdb.set_trace()
+	user_created = request_obj["user_created"]
+	title = request_obj["title"]
+	topic_type = request_obj["topic_type"]
+	sub_reddit = request_obj["sub_reddit"]
+	titleid = random.randint(10000,1000000)
+	new_topic = Topic(title, sub_reddit, user_created, topic_type, titleid)
+# 	import pdb;pdb.set_trace()
+	topics.append(new_topic)
+	return HttpResponse('')
 	
-	pass
+	
 	
 	

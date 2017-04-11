@@ -10,16 +10,17 @@
 <body class="uk-container-center">
 	<div class="uk-grid" data-uk-grid-match="{row:false}">
 		<div class="uk-width-3-4">
-			<article class="uk-article">
+			<article class="uk-article" >
 				<h1 class="uk-article-title uk-text-center">Reddit</h1>
 			</article>
 			
 			<table class="uk-table" id="topictable">
 				<thead>
 					<ul class="uk-tab" data-uk-tab>
-					    <li class="uk-active"><a href="" onclick="loadHot(this)">Hot</a></li>
-					    <li><a href="" onclick="loadNew(this)">New</a></li>
-					    <li><a href="">Trending</a></li>
+					    <li class="uk-active"><a href="" onclick="loadcontent('20')">Top 20</a></li>
+					    <li><a href="" onclick="loadNew()">Most recent</a></li>
+					    <li><a href="" onclick="loadcontent('all')">All</a></li>
+					    <li><a href="" onclick="loadSearchelements()">Search</a></li>
 					</ul>
 				</thead>
 				<tbody>
@@ -28,6 +29,7 @@
 			</table>
 		</div>
 		<div class="uk-width-1-4 uk-padding-large uk-padding-remove-top">
+			<div style="position:fixed">
 				<div class="uk-padding-large" data-uk-margin>
 					Continue as : <input class="md-input" type="text" id="username" placeholder="User name"></input>
 					<input class="md-input" type="text" id="emailid" placeholder="Email"></input>
@@ -40,8 +42,7 @@
 					<article>
 						Add New title !
 					</article>
-					<input id="topicname" type="text" class="md-input" placeholder="Topic"></input>
-					<textarea id="textname" cols="22" rows="9" class="md-input" placeholder="Text"></textarea>
+					<textarea id="topicname" cols="22" rows="9" class="md-input" placeholder="Topic" maxlength=255></textarea>
 					<input id="typename" type="text" class="md-input" placeholder="Category"></input>
 					<input id="subreditname" type="text" class="md-input" placeholder="Sub reddit"></input>
 					<article>
@@ -49,46 +50,107 @@
 					</article>
 				</form>
 				</div>
+			</div>
 		</div>
 	</div>
 </body>
 <script type="text/javascript">
 	var topics = [];
-	
+	var username = "";
 	function addtitle(event){
-		alert("heyy");
+		var title = $('#topicname').val();
+		var typename = $('#typename').val();
+		var subredit = $('#subreditname').val();
+		if(username)
+		{
+			$.ajax({
+    			type: "POST",
+    			url: "/Reddit/add_title/",
+    			data: JSON.stringify({'title': title,
+    									'topic_type': typename,
+    									'sub_reddit': subredit,
+    									'user_created':username}),
+    			success: function(data){
+    					window.location.reload();
+    				},
+    			cache: false
+    			});
+		}
+		else
+			alert("Please add User name to continue");
 	}
 	
-	function loadHot(){
+	function loadcontent(content){
 		var topicpanel = "";
+		var searhcontent = $('#searchcategory').val();
+		var searchcount = 0;
 		$('#topictable').html('');
 		for(i=0;i<topics.length;i++)
 		{
+			if(searhcontent && topics[i].topic_type != searhcontent)
+				continue;
+				
 			var upvotes_id = "upvotes_" + topics[i].id;
 			var downvotes_id = "downvotes_" + topics[i].id;
 			topicpanel += '<tr><form method="post">'+
-							'<td><button id="upvotes_btn'+ upvotes_id+'" onclick="trackvotes(this)"">&uarr;</button></td><td id="'+ upvotes_id +'">' + topics[i].upvotes + '</td> '+
+							'<td>(' + (i+1) + ')</td><td><button id="upvotes_btn'+ upvotes_id+'" onclick="trackvotes(this)"">&uarr;</button></td><td id="'+ upvotes_id +'">' + topics[i].upvotes + '</td> '+
 							'<td><button id="downvotes_btn'+ downvotes_id +'" onclick="trackvotes(this)"">&darr;</button></td><td id="'+ downvotes_id +'">' + topics[i].downvotes + '</td> '+
 							'<td id="topicTitle">'+
-								'<a href="#modaltopic">'+
 								'<h5 class="uk-text-middle" style="float:left">' + topics[i].title +
-								'</h5></a>'+
+								'</h5>'+
 								'</td><td><h6 class="uk-text-muted">(' + topics[i].topic_type + ')</h6></td><td>'+
-								'<h6 class="uk-text-right uk-text-muted" style="float:right"> submitted at ' + topics[i].created_date + ' by ' + topics[i].user_created + '</h6>' + 
+								'<h6 class="uk-text-right uk-text-muted uk-text-small" style="float:right"> submitted at ' + topics[i].created_date + ' by ' + topics[i].user_created + '</h6>' + 
 								
 							'</td>' +
 							'</form></tr>';
+			if(content == '20' && i == 19)
+				break;
 		}
 		$('#topictable').html(topicpanel);
 	}
 	
 	function loadNew(){
 		$('#topictable').html('');
+		var topicpanel = "";
+		var recent = topics;
+		recent.sort(function(a,b){
+				return new Date(a.created_date) - new Date(b.created_date);
+		});
+		
+		for(i=0;i<recent.length;i++)
+		{
+			var upvotes_id = "upvotes_" + recent[i].id;
+			var downvotes_id = "downvotes_" + recent[i].id;
+			topicpanel += '<tr><form method="post">'+
+							'<td>(' + (i+1) + ')</td><td><button id="upvotes_btn'+ upvotes_id+'" onclick="trackvotes(this)"">&uarr;</button></td><td id="'+ upvotes_id +'">' + recent[i].upvotes + '</td> '+
+							'<td><button id="downvotes_btn'+ downvotes_id +'" onclick="trackvotes(this)"">&darr;</button></td><td id="'+ downvotes_id +'">' + recent[i].downvotes + '</td> '+
+							'<td id="topicTitle">'+
+								'<h5 class="uk-text-middle" style="float:left">' + recent[i].title +
+								'</h5>'+
+								'</td><td><h6 class="uk-text-muted">(' + recent[i].topic_type + ')</h6></td><td>'+
+								'<h6 class="uk-text-right uk-text-muted uk-text-small" style="float:right"> submitted at ' + recent[i].created_date + ' by ' + recent[i].user_created + '</h6>' + 
+								
+							'</td>' +
+							'</form></tr>';
+			if(i == 4)
+				break;
+		}
+		$('#topictable').html(topicpanel);
+		
 	}
 	
 	$(document).ready(function() {
+		var cookies = document.cookie;
+		var cookieparts = cookies.split("=")[1];
+		if(cookieparts)
+		{
+			username = cookieparts;
+			$('#username').val(cookieparts);
+	    	$('#emailid').hide();
+	    	$('#add').html('Change User');
+	    	}
 		topics = {{context|safe}};
-		loadHot(topics);
+		loadcontent('20');
 		$.ajaxSetup({cache:false});
     });
     
@@ -117,20 +179,31 @@
     	if($('#add').html() == "Change User")
     	{
     		$('#username').val('');
-    		
     		$('#emailid').show();
     		$('#emailid').val('');
     		$('#add').html('Continue');
     		return;
     	}
-    	var username = $('#username').val();
+    	username = $('#username').val();
     	var email = $('#emailid').val();
     	var cookies = "username=" + username + ";" + " email=" + email;
     	document.cookie = cookies;
-    	$('#username').html(username);
+    	$('#username').val(username);
     	$('#emailid').hide();
     	$('#add').html('Change User');
     	alert("User successfully added");
+    }
+    
+    function loadSearchelements(){
+    
+    	var searchpanel = "";
+    	
+    	searchpanel += '<div class="uk-block" style="width:800px; margin:0 auto;"><form class="uk-form ">' +
+    		'<input type="text" placeholder="Enter category" class="md-input uk-form-row" id="searchcategory"></input><br>'+
+    		'<button type="md-btn uk-form-row" onclick="loadcontent()">Search</button></div>'+
+    	'</form>';
+    	$('#topictable').html(searchpanel);
+    
     }
     
     

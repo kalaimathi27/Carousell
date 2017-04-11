@@ -6,8 +6,8 @@ Created on Apr 10, 2017
 
 class Utils:
     def get_topic_dict(self, topic):
+#         import pdb;pdb.set_trace()
         return {"title": topic.title,
-                "text": topic.text,
                 "sub_redit": topic.sub_reddit,
                 "upvotes": topic.upvotes,
                 "downvotes": topic.downvotes,
