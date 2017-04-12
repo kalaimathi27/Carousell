@@ -1,5 +1,5 @@
 *.pyc
 db.sqlite3
-car_project
+Reddit
 __pycache__
 local_settings.py
