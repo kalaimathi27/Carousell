@@ -9,7 +9,8 @@ from Reddit.utils import Utils
 
 def get_initial_topics():
     """
-    Method to furnish the initial data
+    Method to furnish the initial data. Populated with 21 topics.
+    But only the top 20 will be displayed.
     """
     try:
         utils_obj = Utils()
