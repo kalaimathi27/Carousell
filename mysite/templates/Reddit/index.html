@@ -59,7 +59,9 @@
 	var username = "";
 	function addtitle(event)
 	/*
-	
+	* This method is to post request to django API to add title.
+	* this expects a user to be present in cookies.(since authentication/login is not required.
+	* Alerts if no user is present.
 	*/
 
 	{
@@ -85,7 +87,13 @@
 			alert("Please add User name to continue");
 	}
 	
-	function loadcontent(content){
+	function loadcontent(content)
+	/*
+	* This method is to load the content depending upon the tab requested.
+	* Eg. Top 20/ Most recent/ New / Search.
+	* If search button is clicked, then depending upon the category the content is loaded.
+	*/
+	{
 		var topicpanel = "";
 		var searhcontent = $('#searchcategory').val();
 		var searchcount = 0;
@@ -114,7 +122,12 @@
 		$('#topictable').html(topicpanel);
 	}
 	
-	function loadNew(){
+	function loadNew()
+	/*
+	* This method is to load the top 5 recently added topics.
+	* It is sorted in the order of date created.
+	*/
+	{
 		$('#topictable').html('');
 		var topicpanel = "";
 		var recent = topics;
@@ -144,7 +157,11 @@
 		
 	}
 	
-	$(document).ready(function() {
+	$(document).ready(function() 
+	/*
+	* This method instructs to load the first 20 trending topics.
+	*/
+	{
 		var cookies = document.cookie;
 		var cookieparts = cookies.split("=")[1];
 		if(cookieparts)
@@ -159,8 +176,13 @@
 		$.ajaxSetup({cache:false});
     });
     
-    function trackvotes(event){
-    	
+    function trackvotes(event)
+    /*
+    * This method is to increment the upvotes/downvotes.
+    * It sends a post request to the Django API, which increments the vote count.
+    * A category is sent to identify upvotes/downvotes.
+    */
+    {
     	var elmnt_id = document.getElementById(event.id);
     	var count_id = elmnt_id.id.split("_")[2];
     	var vote_type = elmnt_id.id.split("_")[0];
@@ -180,7 +202,12 @@
     	
     }
     
-    function adduser(){
+    function adduser()
+    /*
+    * This method sends a post request to add User.
+    * Email id and username are taken from user. An alert message is given on successful addition.
+    */
+    {
     	if($('#add').html() == "Change User")
     	{
     		$('#username').val('');
@@ -199,10 +226,12 @@
     	alert("User successfully added");
     }
     
-    function loadSearchelements(){
-    
+    function loadSearchelements()
+	/*
+	* This method is to load the html elements for searching. (textbox and button)
+	*/    
+    {
     	var searchpanel = "";
-    	
     	searchpanel += '<div class="uk-block" style="width:800px; margin:0 auto;"><form class="uk-form ">' +
     		'<input type="text" placeholder="Enter category" class="md-input uk-form-row" id="searchcategory"></input><br>'+
     		'<button type="md-btn uk-form-row" onclick="loadcontent()">Search</button></div>'+
