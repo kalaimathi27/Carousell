@@ -1,0 +1,4 @@
+Django==1.11
+django-realtime==1.1
+pytz==2017.2
+psycopg2==2.6.2

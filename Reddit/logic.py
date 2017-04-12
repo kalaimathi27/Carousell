@@ -8,6 +8,9 @@ from Reddit.utils import Utils
 
 
 def get_initial_topics():
+    """
+    Method to furnish the initial data
+    """
     try:
         utils_obj = Utils()
         text_list = ["Music is all to me",
@@ -33,7 +36,8 @@ def get_initial_topics():
             temp_topic.downvotes = i-1
             temp_topic.title = text_list[i]
             temp_topic.topic_type = topic_type[i]
-            temp_topic.titleid = i*10 + 1;
+            temp_topic.titleid = i*10 + 1
+            temp_topic.created_date = datetime.datetime(2017,1,1)
             topics.append(temp_topic)
         return topics
     except Exception as exce:
@@ -54,9 +58,14 @@ class Topic:
         self.created_date = datetime.datetime.now()
     
     def track_votes(self, vote_category):
+        """
+        Method to increment or increment upvotes and downvotes
+        :param: vote category(upvotes/downvotes) that has to be tracked
+        :returns: None
+        """
         if vote_category == "upvotes":
             self.upvotes += 1;
         else:
-            self.downvotes -= 1;
+            self.downvotes += 1;
 
         
